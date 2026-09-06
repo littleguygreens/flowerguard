@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Stardew Valley 1.6 runs on .NET 6, so the mod must target it too. -->
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <!-- Tells the SMAPI build package to also wire up Harmony for us. -->
+    <EnableHarmony>true</EnableHarmony>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      This one NuGet package does the heavy lifting: it finds your installed
+      copy of Stardew Valley, references the game and SMAPI automatically, and
+      copies the built mod into your Mods folder. It's the standard way to
+      build SMAPI mods, so you don't have to hand-manage any game .dll paths.
+    -->
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.3.2" />
+  </ItemGroup>
+
+</Project>

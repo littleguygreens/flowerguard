@@ -1,0 +1,6 @@
+# Build output
+bin/
+obj/
+
+# User-specific build config (created locally by the SMAPI build package)
+*.user

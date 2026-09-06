@@ -1,0 +1,10 @@
+{
+  "Name": "Honey Helper",
+  "Author": "littleguygreens",
+  "Version": "0.1.0",
+  "Description": "Stops you accidentally picking flowers that are feeding a nearby bee house while you collect honey.",
+  "UniqueID": "littleguygreens.HoneyHelper",
+  "EntryDll": "HoneyHelper.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
+}
