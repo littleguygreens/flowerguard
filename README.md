@@ -16,24 +16,37 @@ flavour of every hive that relied on it.
 - Flowers planted within a bee house's range become **un-pickable by hand**.
 - **Collecting honey is completely unaffected** — that's a different game action,
   so you can still button-mash at the hives freely.
-- The protection range is **tuneable** in `config.json` (see below).
+- Optionally, the **scythe can still cut protected flowers on purpose** (on by default).
+- The protection range is **tuneable** — the bee house's own range plus up to 3 tiles.
+
+## Configuring it in-game
+
+If you also install [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098)
+(GMCM), Honey Helper adds a settings page drawn in the game's own style, with a
+toggle for scythe cutting and a slider for the range. GMCM is **optional** — the
+mod works fine without it, and you can always edit `config.json` by hand instead.
 
 ## Status
 
 **Draft — not yet compiled or tested in-game.** This is a first pass written to
 be reviewed. A few game-API details (see the code comments) still need to be
-verified against a real build before it's known-good.
+verified against a real build before it's known-good. In particular, the scythe
+exception decides "is this a deliberate scythe cut?" by checking the equipped
+tool; that heuristic needs an in-game test to confirm it covers every harvest
+path (e.g. hand-picking while a scythe happens to be equipped).
 
 ## Settings (`config.json`)
 
 The file is created automatically the first time the mod runs.
 
-| Setting           | Default | Meaning                                                        |
-| ----------------- | ------- | -------------------------------------------------------------- |
-| `Enabled`         | `true`  | Master on/off switch. Set to `false` for normal picking.       |
-| `ProtectionRange` | `5`     | How many tiles out from a bee house flowers are protected.     |
+| Setting              | Default | Meaning                                                                        |
+| -------------------- | ------- | ------------------------------------------------------------------------------ |
+| `Enabled`            | `true`  | Master on/off switch. Set to `false` for normal picking.                       |
+| `AllowScytheHarvest` | `true`  | If `true`, the scythe can still cut protected flowers; only hand-picking stops. |
+| `ExtraRange`         | `0`     | Extra tiles of protection added on top of the bee house's range (0–3).          |
 
-`5` matches the game's own bee-house flower range (a diamond, 5 tiles each way).
+The bee house's own flower range is a diamond of 5 tiles, so `ExtraRange: 0`
+protects exactly that, and `3` reaches 8 tiles out.
 
 ## Building
 
