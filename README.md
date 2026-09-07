@@ -1,4 +1,4 @@
-# Honey Helper
+# Flower Guard
 
 A small [Stardew Valley](https://www.stardewvalley.net/) mod for
 [SMAPI](https://smapi.io/) that stops you accidentally picking the flowers that
@@ -22,8 +22,8 @@ flavour of every hive that relied on it.
 ## Configuring it in-game
 
 If you also install [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098)
-(GMCM), Honey Helper adds a settings page drawn in the game's own style, with a
-toggle for scythe cutting and a slider for the range. GMCM is **optional** — the
+(GMCM), Flower Guard adds a settings page drawn in the game's own style, with a
+toggle for scythe cutting and a dropdown for the range. GMCM is **optional** — the
 mod works fine without it, and you can always edit `config.json` by hand instead.
 
 ## Status
@@ -59,7 +59,7 @@ dotnet build
 
 The [ModBuildConfig](https://github.com/Pathoschild/SMAPI/blob/develop/docs/technical/mod-package.md)
 package locates your game automatically and copies the built mod into your
-`Stardew Valley/Mods/HoneyHelper` folder. Launch the game through SMAPI to run it.
+`Stardew Valley/Mods/FlowerGuard` folder. Launch the game through SMAPI to run it.
 
 ## How it works (for the curious)
 

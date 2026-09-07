@@ -1,7 +1,7 @@
 using System;
 using StardewModdingAPI;
 
-namespace HoneyHelper
+namespace FlowerGuard
 {
     /// <summary>
     /// A small "contract" describing the parts of the Generic Mod Config Menu
@@ -29,8 +29,15 @@ namespace HoneyHelper
         /// <summary>
         /// Add a number option. Giving min/max/interval turns it into a slider.
         /// <paramref name="formatValue"/> lets us show friendly labels (e.g.
-        /// "Beehive range", "+1") instead of the raw number.
+        /// "Bee House range", "+1") instead of the raw number.
         /// </summary>
         void AddNumberOption(IManifest mod, Func<int> getValue, Action<int> setValue, Func<string> name, Func<string>? tooltip = null, int? min = null, int? max = null, int? interval = null, Func<int, string>? formatValue = null, string? fieldId = null);
+
+        /// <summary>
+        /// Add a text option. Giving <paramref name="allowedValues"/> turns it
+        /// into a dropdown restricted to those choices; <paramref name="formatAllowedValue"/>
+        /// lets us show a friendly label for each choice instead of the raw value.
+        /// </summary>
+        void AddTextOption(IManifest mod, Func<string> getValue, Action<string> setValue, Func<string> name, Func<string>? tooltip = null, string[]? allowedValues = null, Func<string, string>? formatAllowedValue = null, string? fieldId = null);
     }
 }

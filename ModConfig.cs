@@ -1,4 +1,4 @@
-namespace HoneyHelper
+namespace FlowerGuard
 {
     /// <summary>
     /// These are the settings a player can change. SMAPI writes them to a
@@ -25,7 +25,7 @@ namespace HoneyHelper
         /// Extra tiles of protection added ON TOP of the bee house's own flower
         /// range. 0 means "exactly the bee house's range" (the vanilla 5 tiles);
         /// 1, 2, or 3 widens the protected zone by that many tiles.
-        /// This maps directly to the in-game slider: "Beehive range", "+1", "+2", "+3".
+        /// This maps directly to the in-game dropdown: "Bee House range", "+1", "+2", "+3".
         /// </summary>
         public int ExtraRange { get; set; } = 0;
     }

@@ -9,7 +9,7 @@ using StardewValley.Tools;
 // "object". This alias lets us write "SObject" to mean the game's version.
 using SObject = StardewValley.Object;
 
-namespace HoneyHelper
+namespace FlowerGuard
 {
     /// <summary>
     /// The mod's entry point. SMAPI looks for exactly one class that inherits
@@ -61,7 +61,7 @@ namespace HoneyHelper
             // because GMCM must already be loaded for us to find it.
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
 
-            this.Monitor.Log("Honey Helper loaded. Flowers near bee houses are now protected.", LogLevel.Info);
+            this.Monitor.Log("Flower Guard loaded. Flowers near bee houses are now protected.", LogLevel.Info);
         }
 
         /// <summary>
@@ -102,20 +102,17 @@ namespace HoneyHelper
                 tooltip: () => "If on, the scythe can still cut protected flowers on purpose. Only accidental hand-picking stays blocked."
             );
 
-            // The range slider. Under the hood it's a number from 0 to 3 (the
-            // extra tiles), but formatValue shows friendly labels instead.
-            menu.AddNumberOption(
+            // The range control. Under the hood it's a number from 0 to 3 (the
+            // extra tiles), but it's presented as a dropdown of the 4 allowed
+            // choices, with FormatRange showing a friendly label for each.
+            menu.AddTextOption(
                 mod: this.ModManifest,
-                getValue: () => Config.ExtraRange,
-                setValue: value => Config.ExtraRange = value,
+                getValue: () => Config.ExtraRange.ToString(),
+                setValue: value => Config.ExtraRange = int.Parse(value),
                 name: () => "Protected range",
                 tooltip: () => "How far protection reaches: the bee house's own flower range, plus up to 3 extra tiles.",
-                min: 0,
-                max: 3,
-                interval: 1,
-                formatValue: value => value == 0
-                    ? $"Beehive range ({VanillaBeeHouseFlowerRange} tiles)"
-                    : $"+{value} ({VanillaBeeHouseFlowerRange + value} tiles)"
+                allowedValues: new[] { "0", "1", "2", "3" },
+                formatAllowedValue: value => FormatRange(int.Parse(value))
             );
         }
 
@@ -176,10 +173,15 @@ namespace HoneyHelper
             {
                 // A mod should never crash the game. If anything unexpected
                 // happens, log it and fall back to normal harvesting.
-                Log?.Log($"Honey Helper hit a problem and allowed the harvest: {ex}", LogLevel.Error);
+                Log?.Log($"Flower Guard hit a problem and allowed the harvest: {ex}", LogLevel.Error);
                 return true;
             }
         }
+
+        /// <summary>The friendly label GMCM shows for a given extra-range choice.</summary>
+        private static string FormatRange(int extraRange) => extraRange == 0
+            ? $"Bee House range ({VanillaBeeHouseFlowerRange} tiles)"
+            : $"+{extraRange} ({VanillaBeeHouseFlowerRange + extraRange} tiles)";
 
         /// <summary>True if this crop produces a flower.</summary>
         private static bool IsFlower(Crop? crop)
@@ -201,14 +203,23 @@ namespace HoneyHelper
         }
 
         /// <summary>
-        /// True if the current player is actively holding a scythe. We use this
-        /// to tell a deliberate scythe cut apart from an accidental hand-pick.
-        /// NOTE: this checks the equipped tool, so it needs a quick in-game test
-        /// to confirm it behaves for every harvest path (see README caveats).
+        /// True if the current player is mid-swing with a scythe right now.
+        ///
+        /// Just checking the equipped tool isn't enough: the action/interact
+        /// button (hand-picking) fires Crop.harvest the same way regardless of
+        /// what's in your toolbar, so if the scythe merely happened to be
+        /// selected, that check let hand-picks through too. "UsingTool" is only
+        /// true while a tool's swing/use animation is actually playing, which
+        /// is what tells a deliberate scythe cut apart from an accidental
+        /// hand-pick made while the scythe just happens to be equipped.
         /// </summary>
         private static bool IsPlayerUsingScythe()
         {
-            return Game1.player?.CurrentTool is MeleeWeapon weapon && weapon.isScythe();
+            Farmer? player = Game1.player;
+            return player != null
+                && player.UsingTool
+                && player.CurrentTool is MeleeWeapon weapon
+                && weapon.isScythe();
         }
 
         /// <summary>True if any placed bee house is within <paramref name="range"/> tiles of the flower.</summary>

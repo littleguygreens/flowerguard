@@ -1,4 +1,4 @@
-# Honey Helper — project notes for Claude
+# Flower Guard — project notes for Claude
 
 A small Stardew Valley SMAPI mod (C#) that stops flowers within a bee house's
 range from being picked by hand, while leaving honey collection untouched.

@@ -1,10 +1,10 @@
 {
-  "Name": "Honey Helper",
+  "Name": "Flower Guard",
   "Author": "littleguygreens",
   "Version": "0.1.0",
   "Description": "Stops you accidentally picking flowers that are feeding a nearby bee house while you collect honey.",
-  "UniqueID": "littleguygreens.HoneyHelper",
-  "EntryDll": "HoneyHelper.dll",
+  "UniqueID": "littleguygreens.FlowerGuard",
+  "EntryDll": "FlowerGuard.dll",
   "MinimumApiVersion": "4.0.0",
   "UpdateKeys": [],
   "Dependencies": [
