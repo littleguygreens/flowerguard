@@ -16,7 +16,11 @@ flavour of every hive that relied on it.
 - Flowers planted within a bee house's range become **un-pickable by hand**.
 - **Collecting honey is completely unaffected** — that's a different game action,
   so you can still button-mash at the hives freely.
-- Optionally, the **scythe can still cut protected flowers on purpose** (on by default).
+- Optionally, a deliberate **scythe swing can still cut protected flowers** (on
+  by default). Note that in vanilla Stardew, only the **Iridium Scythe** (a
+  Farming Mastery reward) can harvest crops at all — the base and Golden
+  Scythes only cut grass and weeds, so with those equipped, hand-picking
+  stays the only way to harvest a flower.
 - The protection range is **tuneable** — the bee house's own range plus up to 3 tiles.
 
 ## Configuring it in-game
@@ -25,15 +29,6 @@ If you also install [Generic Mod Config Menu](https://www.nexusmods.com/stardewv
 (GMCM), Flower Guard adds a settings page drawn in the game's own style, with a
 toggle for scythe cutting and a dropdown for the range. GMCM is **optional** — the
 mod works fine without it, and you can always edit `config.json` by hand instead.
-
-## Status
-
-**Draft — not yet compiled or tested in-game.** This is a first pass written to
-be reviewed. A few game-API details (see the code comments) still need to be
-verified against a real build before it's known-good. In particular, the scythe
-exception decides "is this a deliberate scythe cut?" by checking the equipped
-tool; that heuristic needs an in-game test to confirm it covers every harvest
-path (e.g. hand-picking while a scythe happens to be equipped).
 
 ## Settings (`config.json`)
 
@@ -65,5 +60,7 @@ package locates your game automatically and copies the built mod into your
 
 The mod uses [Harmony](https://harmony.pardeike.net/) to run a small check just
 before the game harvests any crop. If the crop is a flower **and** a bee house is
-within range, the harvest is cancelled. Everything else — including honey
-collection, which is a separate game action — is left untouched.
+within range, the harvest is cancelled — unless the player is actively mid-swing
+with a scythe, which is allowed through when `AllowScytheHarvest` is on. Everything
+else — including honey collection, which is a separate game action — is left
+untouched.
