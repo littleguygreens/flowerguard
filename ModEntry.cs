@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -22,6 +24,13 @@ namespace FlowerGuard
         /// The player's slider adds 0-3 extra tiles on top of this.
         /// </summary>
         private const int VanillaBeeHouseFlowerRange = 5;
+
+        /// <summary>
+        /// The game's own translucent green "valid placement" tile, from the
+        /// cursors spritesheet -- the same graphic it draws under a bee house
+        /// while you're deciding where to place one.
+        /// </summary>
+        private static readonly Rectangle PlacementTileSource = new Rectangle(194, 388, 16, 16);
 
         // Our Harmony patch (further down) is a "static" method, which means it
         // belongs to the class itself rather than to a particular instance.
@@ -60,6 +69,9 @@ namespace FlowerGuard
             // right moment to look for GMCM and register our options page,
             // because GMCM must already be loaded for us to find it.
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+
+            // Draws the protected-range overlay every frame, when turned on.
+            helper.Events.Display.RenderedWorld += this.OnRenderedWorld;
 
             this.Monitor.Log("Flower Guard loaded. Flowers near bee houses are now protected.", LogLevel.Info);
         }
@@ -114,6 +126,69 @@ namespace FlowerGuard
                 allowedValues: new[] { "0", "1", "2", "3" },
                 formatAllowedValue: value => FormatRange(int.Parse(value))
             );
+
+            // The overlay toggle -- mostly for screenshots and planning where
+            // to plant, since it's otherwise invisible which tiles are protected.
+            menu.AddBoolOption(
+                mod: this.ModManifest,
+                getValue: () => Config.ShowRangeOverlay,
+                setValue: value => Config.ShowRangeOverlay = value,
+                name: () => "Show protected range",
+                tooltip: () => "Draws a green tile overlay over every tile currently protected by a bee house."
+            );
+        }
+
+        /// <summary>Draws the protected-range overlay, when the player has it turned on.</summary>
+        private void OnRenderedWorld(object? sender, RenderedWorldEventArgs e)
+        {
+            if (!Config.Enabled || !Config.ShowRangeOverlay)
+                return;
+
+            GameLocation? location = Game1.currentLocation;
+            if (location == null)
+                return;
+
+            int range = VanillaBeeHouseFlowerRange + Config.ExtraRange;
+            foreach (Vector2 tile in GetProtectedTiles(location, range))
+            {
+                e.SpriteBatch.Draw(
+                    Game1.mouseCursors,
+                    Game1.GlobalToLocal(Game1.viewport, tile * 64f),
+                    PlacementTileSource,
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    4f,
+                    SpriteEffects.None,
+                    1f
+                );
+            }
+        }
+
+        /// <summary>Every tile protected by a bee house on <paramref name="location"/>, deduplicated.</summary>
+        private static HashSet<Vector2> GetProtectedTiles(GameLocation location, int range)
+        {
+            var tiles = new HashSet<Vector2>();
+
+            foreach (var pair in location.Objects.Pairs)
+            {
+                SObject obj = pair.Value;
+                if (obj == null || obj.QualifiedItemId != "(BC)10")
+                    continue;
+
+                Vector2 hiveTile = pair.Key;
+
+                // Same diamond shape IsNearBeeHouse checks against, walked tile
+                // by tile instead of tested one flower at a time.
+                for (int dx = -range; dx <= range; dx++)
+                {
+                    int remaining = range - Math.Abs(dx);
+                    for (int dy = -remaining; dy <= remaining; dy++)
+                        tiles.Add(new Vector2(hiveTile.X + dx, hiveTile.Y + dy));
+                }
+            }
+
+            return tiles;
         }
 
         /// <summary>

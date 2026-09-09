@@ -28,5 +28,11 @@ namespace FlowerGuard
         /// This maps directly to the in-game dropdown: "Bee House range", "+1", "+2", "+3".
         /// </summary>
         public int ExtraRange { get; set; } = 0;
+
+        /// <summary>
+        /// If true, draws a green tile overlay over every tile a nearby bee
+        /// house protects, using the game's own placement-tile graphic.
+        /// </summary>
+        public bool ShowRangeOverlay { get; set; } = false;
     }
 }
